@@ -1,0 +1,26 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- master
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- task: Ant@1
+  inputs:
+    workingDirectory: ''
+    buildFile: './build/build.xml'
+    options: -Dsalesforce.serverurl=$(salesforce.serverurl) 
+             -Dsalesforce.password=$(salesforce.password)
+             -Dsalesforce.testLevel=$(salesforce.testLevel)
+             -Dsalesforce.username=$(salesforce.username)
+    javaHomeOption: 'JDKVersion'
+    jdkVersionOption: '1.8'
+    jdkArchitectureOption: 'x64'
+    publishJUnitResults: true
+    testResultsFiles: '**/TEST-*.xml'
+    targets: deployCode

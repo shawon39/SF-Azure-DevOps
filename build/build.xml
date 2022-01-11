@@ -1,0 +1,48 @@
+<project name="Sample usage of Salesforce Ant tasks" default="retrieve" basedir="." xmlns:sf="antlib:com.salesforce">
+
+  <property file="build.properties" />
+  <property environment="env" />
+
+  <property name="ant.jar" value="ant-salesforce.jar" />
+  <property name="sf.username" value="${salesforce.username}" />
+  <property name="sf.password" value="${salesforce.password}" />
+  <property name="sf.serverurl" value="${salesforce.serverurl}" />
+  <property name="sf.testLevel" value="${salesforce.testLevel}" />
+
+  <path id="classpath">
+    <fileset dir="${lib.dir}" includes="**/*.jar" />
+  </path>
+
+  <taskdef resource="com/salesforce/antlib.xml" uri="antlib:com.salesforce">
+    <classpath>
+      <pathelement location="${ant.jar}" />
+    </classpath>
+  </taskdef>
+
+  <target name="retrieve" depends="info">
+    <sf:retrieve 
+        username="${sf.username}" 
+        password="${sf.password}"
+        serverurl="${sf.serverurl}"
+        maxPoll="${sf.maxPoll}"
+        retrieveTarget="../manifest" 
+        unpackaged="../manifest/package.xml"/>
+  </target>
+
+  <target name="deployCode" depends="info">
+    <sf:deploy 
+        username="${sf.username}"
+        password="${sf.password}"
+        serverurl="${sf.serverurl}"
+        maxPoll="${sf.maxPoll}"
+        deployRoot="../force-app/main/default"
+        rollbackOnError="true"
+        checkOnly="false"
+        trace="false"/>
+  </target>
+
+  <target name="info">
+    <echo message="User Name => ${sf.username}, testLevel=${sf.testLevel}, serverurl=${sf.serverurl}, maxPoll=${sf.maxPoll} " />
+  </target>
+
+</project>
